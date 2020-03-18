@@ -1,23 +1,14 @@
 pipeline {
     agent any
+    parameters {
+        string(name: 'TAG_TO_BUILD', defaultValue: '', description: 'Tag to release?')
+    }
     stages {
-      stages{
-      stage("Select tag to release" ) {
-        timeout(time: 120, unit: 'SECONDS') {
-            script {
-            // Show the select input modal
-          def INPUT = input(
-            id: 'Tag', 
-            message: 'Git tag to release', 
-            ok: 'Release', 
-            parameters: [string(name: 'TAG_TO_BUILD', description: 'Tag to release')]
-          )
-          env.TAG_TO_BUILD = INPUT.TAG_TO_BUILD
-      }
-      stage('Example') {
-            steps {
-                echo "To build ${env.TAG_TO_BUILD}!"
-            }
+        stage("Git Checkout"){
+          steps {
+            echo "${params.TAG_TO_BUILD} World!"
+            git branch: '${params.TAG_TO_BUILD}', url: 'https://github.com/fbricon/releaseme.git'
         }
+    }
     }
 }
