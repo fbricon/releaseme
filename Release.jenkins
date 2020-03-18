@@ -1,12 +1,22 @@
 pipeline {
     agent any
-    parameters {
-        string(name: 'Greeting', defaultValue: 'Hello', description: 'How should I greet the world?')
-    }
     stages {
-        stage('Example') {
+      stages{
+      stage("Select tag to release" ) {
+        timeout(time: 120, unit: 'SECONDS') {
+            script {
+            // Show the select input modal
+          def INPUT = input(
+            id: 'Tag', 
+            message: 'Git tag to release', 
+            ok: 'Release', 
+            parameters: [string(name: 'TAG_TO_BUILD', description: 'Tag to release')]
+          )
+          env.TAG_TO_BUILD = INPUT.TAG_TO_BUILD
+      }
+      stage('Example') {
             steps {
-                echo "${params.Greeting} World!"
+                echo "To build ${env.TAG_TO_BUILD}!"
             }
         }
     }
